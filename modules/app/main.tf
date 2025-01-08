@@ -2,7 +2,7 @@
 resource "aws_instance" "instance" {
   ami = data.aws_ami.ami.image_id
   instance_type = var.instance_type
-  vpc_security_group_ids = [aws_security_group.sg.id]
+#   vpc_security_group_ids = [aws_security_group.sg.id]
   subnet_id = var.subnets_id[0]
   instance_market_options {
     market_type = "spot"
@@ -19,26 +19,26 @@ resource "aws_instance" "instance" {
 }
 
 # create a security group
-resource "aws_security_group" "sg" {
-  name        = "${var.env}-vsg"
-  description = "${var.env}-vsg"
-  vpc_id      = var.vpc_id
-  ingress {
-    from_port   =  0
-    to_port     =  0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  egress {
-    from_port   =  0
-    to_port     =  0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags = {
-    Name = "${var.env}-vsg"
-  }
-}
+# resource "aws_security_group" "sg" {
+#   name        = "${var.env}-vsg"
+#   description = "${var.env}-vsg"
+#   vpc_id      = var.vpc_id
+#   ingress {
+#     from_port   =  0
+#     to_port     =  0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+#   egress {
+#     from_port   =  0
+#     to_port     =  0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+#   tags = {
+#     Name = "${var.env}-vsg"
+#   }
+# }
 
 # resource "null_resource" "null_instance" {
 #   connection {
