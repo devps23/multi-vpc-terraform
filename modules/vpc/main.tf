@@ -17,7 +17,7 @@ resource "aws_vpc_peering_connection" "peerconn" {
 }
 # create a frontend subnets
 resource "aws_subnet" "frontend_subnets" {
-  count     = length[count.index]
+  count     = length(var.frontend_subnets)
   vpc_id     = aws_vpc.vpc.id
   cidr_block = var.frontend_subnets[count.index]
   availability_zone = var.availability_zone[count.index]
@@ -27,7 +27,7 @@ resource "aws_subnet" "frontend_subnets" {
 }
 # create a backend subnets
 resource "aws_subnet" "backend_subnets" {
-  count     = length[count.index]
+  count     = length(var.backend_subnets)
   vpc_id     = aws_vpc.vpc.id
   cidr_block = var.backend_subnets[count.index]
   availability_zone = var.availability_zone[count.index]
@@ -38,7 +38,7 @@ resource "aws_subnet" "backend_subnets" {
 }
 # create a backend subnets
 resource "aws_subnet" "mysql_subnets" {
-  count     = length[count.index]
+  count     = length(var.mysql_subnets)
   vpc_id     = aws_vpc.vpc.id
   cidr_block = var.mysql_subnets[count.index]
   availability_zone = var.availability_zone[count.index]
