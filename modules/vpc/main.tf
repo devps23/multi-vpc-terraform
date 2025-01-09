@@ -36,13 +36,14 @@ resource "aws_route_table" "public" {
   count = length(var.public_subnets)
   vpc_id = aws_vpc.vpc.id
   route {
-    gateway_id                = aws_internet_gateway.gw.id
-    cidr_block                 = "0.0.0.0/0"
-  }
-  route {
     cidr_block = var.default_vpc_cidr_block
     vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
   }
+  route {
+    gateway_id                = aws_internet_gateway.gw.id
+    cidr_block                 = "0.0.0.0/0"
+  }
+
   tags = {
     Name = "${var.env}-public-rt-${count.index}"
   }
