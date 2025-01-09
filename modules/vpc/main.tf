@@ -86,3 +86,16 @@ resource "aws_route_table" "public" {
     Name = "${var.env}-public-rt-${count.index}"
   }
 }
+# create an internet gateway
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.vpc.id
+  tags = {
+    Name = "${var.env}-igw"
+  }
+}
+resource "aws_route" "frontend" {
+  route_table_id            = aws_route_table.frontend.id
+  destination_cidr_block    = "10.0.1.0/22"
+  vpc_peering_connection_id = "pcx-45ff3dc1"
+}
+
