@@ -56,3 +56,21 @@ resource "aws_subnet" "public_subnets" {
     Name = "${var.env}-public-subnet-${count.index+1}"
   }
 }
+
+# create route table for frontend
+resource "aws_route_table" "frontend" {
+  count = length(var.frontend_subnets)
+  vpc_id = aws_vpc.vpc.id
+}
+resource "aws_route_table" "backend" {
+  count = length(var.backend_subnets)
+  vpc_id = aws_vpc.vpc.id
+}
+resource "aws_route_table" "mysql" {
+  count = length(var.mysql_subnets)
+  vpc_id = aws_vpc.vpc.id
+}
+resource "aws_route_table" "public" {
+  count = length(var.public_subnets)
+  vpc_id = aws_vpc.vpc.id
+}
