@@ -86,6 +86,10 @@ resource "aws_route_table" "public" {
     gateway_id                = aws_internet_gateway.gw.id
     cidr_block                 = "0.0.0.0/0"
   }
+  route {
+    destination_cidr_block    = var.vpc_cidr_block
+    vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
+  }
   tags = {
     Name = "${var.env}-public-rt-${count.index}"
   }
@@ -97,12 +101,7 @@ resource "aws_internet_gateway" "gw" {
     Name = "${var.env}-igw"
   }
 }
-resource "aws_route" "public" {
-  count                     = length(var.public_subnets)
-  route_table_id            = aws_route_table.public[count.index].id
-  destination_cidr_block    = var.vpc_cidr_block
-  vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
-}
+
 # create nat gateway
 # resource "aws_nat_gateway" "nat" {
 #   count = length(var.public_subnets)
