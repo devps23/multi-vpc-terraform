@@ -99,7 +99,7 @@ resource "aws_route_table_association" "frontend" {
 }
 resource "aws_route" "frontend" {
   count = length(var.frontend_subnets)
-  route_table_id            = aws_route_table.frontend[count.index].id
+  route_table_id            = aws_vpc.vpc.main_route_table_id[count.index]
   destination_cidr_block    = var.default_vpc_cidr_block
   vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
 }
