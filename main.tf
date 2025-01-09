@@ -31,7 +31,7 @@ module "frontend" {
 #   subnets_id = module.vpc.mysql_subnets
 # }
 module "vpc"{
-  source = "./modules/vpc"
+  source = "./modules/vpc1"
   vpc_cidr_block = var.vpc_cidr_block
   env = var.env
   default_vpc_id=var.default_vpc_id
