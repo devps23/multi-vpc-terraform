@@ -41,4 +41,5 @@ module "vpc"{
   backend_subnets = var.backend_subnets
   mysql_subnets = var.mysql_subnets
   availability_zone = var.availability_zone
+  public_subnets = var.public_subnets
 }
