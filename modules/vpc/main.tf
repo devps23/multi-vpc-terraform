@@ -26,26 +26,26 @@ resource "aws_subnet" "frontend_subnets" {
   }
 }
 # create a backend subnets
-resource "aws_subnet" "backend_subnets" {
-  count     = length(var.backend_subnets)
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = var.backend_subnets[count.index]
-  availability_zone = var.availability_zone[count.index]
-
-  tags = {
-    Name = "${var.env}-backend-subnet-${count.index+1}"
-  }
-}
-# create a backend subnets
-resource "aws_subnet" "mysql_subnets" {
-  count     = length(var.mysql_subnets)
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = var.mysql_subnets[count.index]
-  availability_zone = var.availability_zone[count.index]
-  tags = {
-    Name = "${var.env}-mysql-subnet-${count.index+1}"
-  }
-}
+# resource "aws_subnet" "backend_subnets" {
+#   count     = length(var.backend_subnets)
+#   vpc_id     = aws_vpc.vpc.id
+#   cidr_block = var.backend_subnets[count.index]
+#   availability_zone = var.availability_zone[count.index]
+#
+#   tags = {
+#     Name = "${var.env}-backend-subnet-${count.index+1}"
+#   }
+# }
+# # create a backend subnets
+# resource "aws_subnet" "mysql_subnets" {
+#   count     = length(var.mysql_subnets)
+#   vpc_id     = aws_vpc.vpc.id
+#   cidr_block = var.mysql_subnets[count.index]
+#   availability_zone = var.availability_zone[count.index]
+#   tags = {
+#     Name = "${var.env}-mysql-subnet-${count.index+1}"
+#   }
+# }
 # create public subnets
 resource "aws_subnet" "public_subnets" {
   count      = length(var.public_subnets)
@@ -69,28 +69,28 @@ resource "aws_route_table" "frontend" {
     Name = "${var.env}-frontend-rt-${count.index}"
   }
 }
-resource "aws_route_table" "backend" {
-  count = length(var.backend_subnets)
-  vpc_id = aws_vpc.vpc.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat[count.index].id
-  }
-  tags = {
-    Name = "${var.env}-backend-rt-${count.index}"
-  }
-}
-resource "aws_route_table" "mysql" {
-  count = length(var.mysql_subnets)
-  vpc_id = aws_vpc.vpc.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat[count.index].id
-  }
-  tags = {
-    Name = "${var.env}-mysql-rt-${count.index}"
-  }
-}
+# resource "aws_route_table" "backend" {
+#   count = length(var.backend_subnets)
+#   vpc_id = aws_vpc.vpc.id
+#   route {
+#     cidr_block = "0.0.0.0/0"
+#     nat_gateway_id = aws_nat_gateway.nat[count.index].id
+#   }
+#   tags = {
+#     Name = "${var.env}-backend-rt-${count.index}"
+#   }
+# }
+# resource "aws_route_table" "mysql" {
+#   count = length(var.mysql_subnets)
+#   vpc_id = aws_vpc.vpc.id
+#   route {
+#     cidr_block = "0.0.0.0/0"
+#     nat_gateway_id = aws_nat_gateway.nat[count.index].id
+#   }
+#   tags = {
+#     Name = "${var.env}-mysql-rt-${count.index}"
+#   }
+# }
 resource "aws_route_table" "public" {
   count = length(var.public_subnets)
   vpc_id = aws_vpc.vpc.id
@@ -136,16 +136,16 @@ resource "aws_route_table_association" "frontend" {
   subnet_id      = aws_subnet.frontend_subnets[count.index].id
   route_table_id = aws_route_table.frontend[count.index].id
 }
-resource "aws_route_table_association" "backend" {
-  count = length(var.public_subnets)
-  subnet_id      = aws_subnet.backend_subnets[count.index].id
-  route_table_id = aws_route_table.backend[count.index].id
-}
-resource "aws_route_table_association" "mysql" {
-  count = length(var.mysql_subnets)
-  subnet_id      = aws_subnet.mysql_subnets[count.index].id
-  route_table_id = aws_route_table.mysql[count.index].id
-}
+# resource "aws_route_table_association" "backend" {
+#   count = length(var.public_subnets)
+#   subnet_id      = aws_subnet.backend_subnets[count.index].id
+#   route_table_id = aws_route_table.backend[count.index].id
+# }
+# resource "aws_route_table_association" "mysql" {
+#   count = length(var.mysql_subnets)
+#   subnet_id      = aws_subnet.mysql_subnets[count.index].id
+#   route_table_id = aws_route_table.mysql[count.index].id
+# }
 
 resource "aws_route" "frontend" {
   count = length(var.frontend_subnets)
@@ -153,18 +153,18 @@ resource "aws_route" "frontend" {
   destination_cidr_block    = var.default_vpc_cidr_block
   vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
 }
-resource "aws_route" "backend" {
-  count = length(var.backend_subnets)
-  route_table_id            = aws_route_table.backend[count.index].id
-  destination_cidr_block    = var.default_vpc_cidr_block
-  vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
-}
-resource "aws_route" "mysql" {
-  count = length(var.mysql_subnets)
-  route_table_id            = aws_route_table.mysql[count.index].id
-  destination_cidr_block    = var.default_vpc_cidr_block
-  vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
-}
+# resource "aws_route" "backend" {
+#   count = length(var.backend_subnets)
+#   route_table_id            = aws_route_table.backend[count.index].id
+#   destination_cidr_block    = var.default_vpc_cidr_block
+#   vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
+# }
+# resource "aws_route" "mysql" {
+#   count = length(var.mysql_subnets)
+#   route_table_id            = aws_route_table.mysql[count.index].id
+#   destination_cidr_block    = var.default_vpc_cidr_block
+#   vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
+# }
 resource "aws_route" "public" {
   count                    = length(var.public_subnets)
   route_table_id            = aws_route_table.public[count.index].id
