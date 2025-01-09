@@ -83,7 +83,7 @@ resource "aws_route_table" "public" {
   count = length(var.public_subnets)
   vpc_id = aws_vpc.vpc.id
   route {
-    gateway_id                = aws_internet_gateway.gw.id
+    gateway_id                = aws_internet_gateway.gw[count.index].id
     cidr_block                 = "0.0.0.0/0"
   }
   tags = {
