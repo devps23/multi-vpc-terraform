@@ -61,6 +61,10 @@ resource "aws_subnet" "public_subnets" {
 resource "aws_route_table" "frontend" {
   count = length(var.frontend_subnets)
   vpc_id = aws_vpc.vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
   tags = {
     Name = "${var.env}-frontend-rt-${count.index}"
   }
@@ -85,6 +89,10 @@ resource "aws_route_table" "public" {
   route {
     gateway_id                = aws_internet_gateway.gw.id
     cidr_block                 = "0.0.0.0/0"
+  }
+  route{
+    vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
+    cidr_block = var.vpc_cidr_block
   }
   tags = {
     Name = "${var.env}-public-rt-${count.index}"
@@ -134,9 +142,4 @@ resource "aws_route_table_association" "mysql" {
   subnet_id      = aws_subnet.mysql_subnets[count.index].id
   route_table_id = aws_route_table.mysql[count.index].id
 }
-resource "aws_route" "public" {
-  count = length(var.public_subnets)
-  route_table_id            = aws_route_table.public[count.index].id
-  destination_cidr_block    = var.vpc_cidr_block
-  vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
-}
+
