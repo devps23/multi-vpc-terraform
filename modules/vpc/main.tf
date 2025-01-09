@@ -110,7 +110,7 @@ resource "aws_nat_gateway" "nat" {
 # create eip
   resource "aws_eip" "eip" {
     count    = length(var.public_subnets)
-    domain   = "${var.env}-eip"
+    domain   = "vpc"
   }
 
 
