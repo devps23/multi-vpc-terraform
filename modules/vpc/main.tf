@@ -93,9 +93,10 @@ resource "aws_internet_gateway" "gw" {
     Name = "${var.env}-igw"
   }
 }
-resource "aws_route" "frontend" {
-  route_table_id            = aws_route_table.frontend.id
-  destination_cidr_block    = "10.0.1.0/22"
-  vpc_peering_connection_id = "pcx-45ff3dc1"
+resource "aws_route" "public" {
+  count                     = length(var.public_subnets)
+  route_table_id            = aws_route_table.public[count.index].id
+  destination_cidr_block    = "0.0.0.0/0"
+  vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
 }
 
