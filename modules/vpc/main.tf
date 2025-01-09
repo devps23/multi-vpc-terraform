@@ -14,26 +14,7 @@ resource "aws_subnet" "frontend_subnets" {
     Name = "${var.env}-frontend-subnets-${count.index}"
   }
 }
-# resource "aws_subnet" "backend_subnets" {
-#   count                = length(var.backend-subnets)
-#   vpc_id               = aws_vpc.vpc.id
-#   cidr_block           = var.backend-subnets[count.index]
-#   availability_zone    = var.availability_zone[count.index]
-#
-#   tags = {
-#     Name = "${var.env}-backend-subnets-${count.index}"
-#   }
-# }
-# resource "aws_subnet" "db_subnets" {
-#   count                = length(var.db-subnets)
-#   vpc_id               = aws_vpc.vpc.id
-#   cidr_block           = var.db-subnets[count.index]
-#   availability_zone    = var.availability_zone[count.index]
-#
-#   tags = {
-#     Name = "${var.env}-db-subnets-${count.index}"
-#   }
-# }
+
 resource "aws_subnet" "public_subnets" {
   count                = length(var.public_subnets)
   vpc_id               = aws_vpc.vpc.id
@@ -56,12 +37,12 @@ resource "aws_route_table" "frontend_route" {
   vpc_id = aws_vpc.vpc.id
 
   route {
-    cidr_block = var.default_vpc_cidr_block
+    cidr_block                = var.default_vpc_cidr_block
     vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
 
   }
   route {
-    cidr_block ="0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat[count.index].id
 
   }
@@ -69,42 +50,7 @@ resource "aws_route_table" "frontend_route" {
     Name = "frontend-rt-${count.index}"
   }
 }
-# resource "aws_route_table" "backend_route" {
-#   count = length(var.backend-subnets)
-#   vpc_id = aws_vpc.vpc.id
-#
-#   route {
-#     cidr_block = var.default_vpc_cidr
-#     vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
-#
-#   }
-#   route {
-#     cidr_block = "0.0.0.0/0"
-#     nat_gateway_id = aws_nat_gateway.nat[count.index].id
-#
-#   }
-#   tags = {
-#     Name = "backend-rt-${count.index}"
-#   }
-# }
-# resource "aws_route_table" "db_route" {
-#   count = length(var.db-subnets)
-#   vpc_id = aws_vpc.vpc.id
-#
-#   route {
-#     cidr_block = var.default_vpc_cidr
-#     vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
-#
-#   }
-#   route {
-#     cidr_block = "0.0.0.0/0"
-#     nat_gateway_id = aws_nat_gateway.nat[count.index].id
-#
-#   }
-#   tags = {
-#     Name = "db-rt-${count.index}"
-#   }
-# }
+
 resource "aws_route_table" "public_route" {
   count = length(var.public_subnets)
   vpc_id = aws_vpc.vpc.id
