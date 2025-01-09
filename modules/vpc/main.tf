@@ -4,6 +4,14 @@ resource "aws_vpc" "vpc" {
     Name = "vpc-${var.env}-new"
   }
 }
+resource "aws_vpc_peering_connection" "peer" {
+  peer_vpc_id = var.default_vpc_id
+  vpc_id = aws_vpc.vpc.id
+  auto_accept = true
+  tags = {
+    Name = "peer-${var.env}-new"
+  }
+}
 resource "aws_subnet" "frontend_subnets" {
   count                = length(var.frontend_subnets)
   vpc_id               = aws_vpc.vpc.id
@@ -86,30 +94,14 @@ resource "aws_route_table_association" "frontend_ass" {
   subnet_id      = aws_subnet.frontend_subnets[count.index].id
   route_table_id = aws_route_table.frontend_route[count.index].id
 }
-# resource "aws_route_table_association" "backend_ass" {
-#   count = length(var.backend-subnets)
-#   subnet_id      = aws_subnet.backend_subnets[count.index].id
-#   route_table_id = aws_route_table.backend_route[count.index].id
-# }
-# resource "aws_route_table_association" "db_ass" {
-#   count = length(var.db-subnets)
-#   subnet_id      = aws_subnet.db_subnets[count.index].id
-#   route_table_id = aws_route_table.db_route[count.index].id
-# }
+
 resource "aws_route_table_association" "public_ass" {
   count = length(var.public_subnets)
   subnet_id      = aws_subnet.public_subnets[count.index].id
   route_table_id = aws_route_table.public_route[count.index].id
 }
 
-resource "aws_vpc_peering_connection" "peer" {
-  peer_vpc_id = var.default_vpc_id
-  vpc_id = aws_vpc.vpc.id
-  auto_accept = true
-  tags = {
-    Name = "peer-${var.env}-new"
-  }
-}
+
 
 # resource "aws_route" "entry_route"{
 #   route_table_id            = aws_vpc.vpc.main_route_table_id
