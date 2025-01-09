@@ -146,12 +146,7 @@ resource "aws_route_table_association" "mysql" {
   subnet_id      = aws_subnet.mysql_subnets[count.index].id
   route_table_id = aws_route_table.mysql[count.index].id
 }
-resource "aws_route" "public" {
-  count = length(var.public_subnets)
-  route_table_id            = aws_route_table.public[count.index].id
-  destination_cidr_block    = var.default_vpc_cidr_block
-  vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
-}
+
 resource "aws_route" "frontend" {
   count = length(var.frontend_subnets)
   route_table_id            = aws_route_table.frontend[count.index].id
@@ -167,6 +162,12 @@ resource "aws_route" "backend" {
 resource "aws_route" "mysql" {
   count = length(var.mysql_subnets)
   route_table_id            = aws_route_table.mysql[count.index].id
+  destination_cidr_block    = var.default_vpc_cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
+}
+resource "aws_route" "public" {
+  count                    = length(var.public_subnets)
+  route_table_id            = aws_route_table.public[count.index].id
   destination_cidr_block    = var.default_vpc_cidr_block
   vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
 }
