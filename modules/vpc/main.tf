@@ -98,7 +98,7 @@ resource "aws_internet_gateway" "gw" {
   }
 }
 
-create nat gateway
+# create nat gateway
 resource "aws_nat_gateway" "nat" {
   count = length(var.public_subnets)
   allocation_id = aws_eip.eip.id
