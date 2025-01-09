@@ -98,20 +98,20 @@ resource "aws_internet_gateway" "gw" {
   }
 }
 
-# # create nat gateway
-# resource "aws_nat_gateway" "nat" {
-#   count = length(var.public_subnets)
-#   allocation_id = aws_eip.eip.id
-#   subnet_id     = aws_subnet.public_subnets[count.index].id
-#   tags = {
-#     Name = "${var.env}-nat"
-#   }
-# }
-# # create eip
-#   resource "aws_eip" "eip" {
-#     count    = length(var.public_subnets)
-#     domain   = "${var.env}-eip"
-#   }
+# create nat gateway
+resource "aws_nat_gateway" "nat" {
+  count = length(var.public_subnets)
+  allocation_id = aws_eip.eip.id
+  subnet_id     = aws_subnet.public_subnets[count.index].id
+  tags = {
+    Name = "${var.env}-nat"
+  }
+}
+# create eip
+  resource "aws_eip" "eip" {
+    count    = length(var.public_subnets)
+    domain   = "${var.env}-eip"
+  }
 
 
 resource "aws_route_table_association" "public" {
@@ -133,4 +133,10 @@ resource "aws_route_table_association" "mysql" {
   count = length(var.mysql_subnets)
   subnet_id      = aws_subnet.mysql_subnets[count.index].id
   route_table_id = aws_route_table.mysql[count.index].id
+}
+resource "aws_route" "public" {
+  count = length(var.public_subnets)
+  route_table_id            = aws_route_table.public[count.index].id
+  destination_cidr_block    = var.vpc_cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.peerconn.id
 }
