@@ -50,7 +50,7 @@ resource "null_resource" "null_instance" {
     type     = "ssh"
     user     = jsondecode(data.vault_generic_secret.my_secret.data_json).username
     password = jsondecode(data.vault_generic_secret.my_secret.data_json).password
-    host     = aws_instance.instance.public_ip
+    host     = aws_instance.instance.private_ip
 
   }
   provisioner "remote-exec" {
