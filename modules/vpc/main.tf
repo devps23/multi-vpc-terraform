@@ -63,7 +63,7 @@ resource "aws_route_table" "frontend" {
   vpc_id = aws_vpc.vpc.id
   route {
     cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat.id
+    nat_gateway_id = aws_nat_gateway.nat[count.index].id
   }
   tags = {
     Name = "${var.env}-frontend-rt-${count.index}"
